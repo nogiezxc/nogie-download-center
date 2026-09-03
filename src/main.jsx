@@ -16,13 +16,13 @@ const folders = [
 ];
 
 const items = [
-  {id:1, folder:"tools", name:"plat-tools-scrcpy", version:"V10", size:"14.5 MB", type:"ZIP", tags:["ADB","FASTBOOT","SCRCPY"], description:"Complete Platform Tools + scrcpy folder from ROOT-TOOL-NOGIE.V10.", download:"/downloads/NOGIE-plat-tools-scrcpy.zip"},
-  {id:2, folder:"tools", name:"MediaTek", version:"V10", size:"9.0 MB", type:"ZIP", tags:["MTK","TOOL"], description:"MediaTek utility package from ROOT-TOOL-NOGIE.V10.", download:"/downloads/Mediatek-NOGIE.zip"},
-  {id:3, folder:"tools", name:"ROOT-TOOL-NOGIE.V10 Full Package", version:"V10", size:"83.2 MB", type:"ZIP", tags:["FULL","TOOLS"], description:"Complete original NOGIE V10 package bundled as one ZIP.", download:"/downloads/ROOT-TOOL-NOGIE.V10-Full-Package.zip"},
-  {id:4, folder:"drivers", name:"UnisocDriver", version:"V10", size:"8.5 MB", type:"ZIP", tags:["UNISOC","SPD","DRIVER"], description:"Complete Unisoc / SPD driver folder including installers and driver files.", download:"/downloads/NOGIE-UnisocDriver.zip"},
-  {id:5, folder:"drivers", name:"Android USB Driver", version:"V10", size:"8.3 MB", type:"ZIP", tags:["ADB","USB","DRIVER"], description:"Android USB driver folder with 32-bit and 64-bit support files.", download:"/downloads/NOGIE-Android-USB-Driver.zip"},
-  {id:6, folder:"drivers", name:"Universal ADB Driver", version:"V10", size:"15.9 MB", type:"ZIP", tags:["ADB","DRIVER"], description:"Universal ADB Driver installer package.", download:"/downloads/UniversalAdbDriverSetup-NOGIE.zip"},
-  {id:7, folder:"rooting", name:"Root Manager", version:"V10", size:"26.9 MB", type:"ZIP", tags:["APATCH","KERNELSU","ROOT"], description:"Root Manager folder containing APatch, KernelSU Next and Root Checker APK files.", download:"/downloads/NOGIE-Root-Manager.zip"}
+  {id:1, folder:"tools", name:"plat-tools-scrcpy", version:"V10", size:"14.09 MB", type:"ZIP", tags:["ADB","FASTBOOT","SCRCPY"], description:"Complete Platform Tools + scrcpy folder from ROOT-TOOL-NOGIE.V10.", download:"https://qsuggbbmqsxpucxsiwdx.supabase.co/storage/v1/object/public/downloads/plat-tools-scrcpy.zip"},
+  {id:2, folder:"tools", name:"MediaTek", version:"V10", size:"EXE", type:"EXE", tags:["MTK","TOOL"], description:"MediaTek utility package from ROOT-TOOL-NOGIE.V10.", download:"https://qsuggbbmqsxpucxsiwdx.supabase.co/storage/v1/object/public/downloads/Mediatek.exe"},
+  {id:3, folder:"tools", name:"ROOT-TOOL-NOGIE.V10 Full Package", version:"V10", size:"83.2 MB", type:"ZIP", tags:["FULL","TOOLS"], description:"Complete original NOGIE V10 package bundled as one ZIP.", download:"https://github.com/nogiezxc/nogie-download-center/releases/download/v10.0.0/ROOT-TOOL-NOGIE.V10-Full-Package.zip"},
+  {id:4, folder:"drivers", name:"UnisocDriver", version:"V10", size:"8.6 MB", type:"ZIP", tags:["UNISOC","SPD","DRIVER"], description:"Complete Unisoc / SPD driver folder including installers and driver files.", download:"https://qsuggbbmqsxpucxsiwdx.supabase.co/storage/v1/object/public/downloads/UnisocDriver.zip"},
+  {id:5, folder:"drivers", name:"Android USB Driver", version:"V10", size:"8.3 MB", type:"ZIP", tags:["ADB","USB","DRIVER"], description:"Android USB driver folder with 32-bit and 64-bit support files.", download:"https://qsuggbbmqsxpucxsiwdx.supabase.co/storage/v1/object/public/downloads/usb_driver.zip"},
+  {id:6, folder:"drivers", name:"Universal ADB Driver", version:"V10", size:"16 MB", type:"ZIP", tags:["ADB","DRIVER"], description:"Universal ADB Driver installer package.", download:"https://qsuggbbmqsxpucxsiwdx.supabase.co/storage/v1/object/public/downloads/UniversalAdbDriverSetup.msi"},
+  {id:7, folder:"rooting", name:"Root Manager", version:"V10", size:"26.9 MB", type:"ZIP", tags:["APATCH","KERNELSU","ROOT"], description:"Root Manager folder containing APatch, KernelSU Next and Root Checker APK files.", download:"https://qsuggbbmqsxpucxsiwdx.supabase.co/storage/v1/object/public/downloads/Root%20Manager.zip"}
 ];
 
 const external = [
