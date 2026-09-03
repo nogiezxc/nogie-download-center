@@ -1,0 +1,81 @@
+:root{
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:#0b0c0d;color:#eee}
+button,input{font:inherit}
+button{color:inherit}
+.app{min-height:100vh;background:
+ radial-gradient(900px 450px at 20% -10%,rgba(104,70,255,.10),transparent 60%),
+ radial-gradient(800px 400px at 90% 10%,rgba(0,220,170,.06),transparent 60%),
+ #0b0c0d}
+.topbar{height:76px;border-bottom:1px solid #292a2c;background:rgba(13,14,15,.86);backdrop-filter:blur(16px);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:5}
+.brand{display:flex;align-items:center;gap:11px;font-weight:700;letter-spacing:-.2px}
+.brandIcon{width:32px;height:32px;border-radius:9px;background:#eee;color:#101112;display:grid;place-items:center}
+.topActions{display:flex;align-items:center;gap:10px}
+.search{width:310px;height:38px;border:1px solid #303134;border-radius:22px;background:#171819;display:flex;align-items:center;gap:9px;padding:0 14px;color:#777}
+.search input{width:100%;border:0;outline:0;background:transparent;color:#eee;font-size:13px}
+.iconBtn{width:38px;height:38px;border-radius:50%;border:1px solid #303134;background:#171819;display:grid;place-items:center;cursor:pointer}
+.content{max-width:1020px;margin:0 auto;padding:54px 28px 70px}
+.hero{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px}
+.eyebrow{font-size:11px;letter-spacing:1.7px;color:#777;font-weight:800;margin:0 0 10px}
+h1{font-size:34px;line-height:1;margin:0 0 10px;letter-spacing:-1.2px}
+.subtitle{color:#888;margin:0;max-width:600px;font-size:14px}
+.countPill{background:#1b1c1e;border:1px solid #303134;color:#888;padding:7px 13px;border-radius:20px;font-size:12px}
+.folderList{border:1px solid #303134;border-radius:16px;overflow:hidden;background:rgba(18,19,20,.75);box-shadow:0 18px 60px rgba(0,0,0,.22)}
+.folderRow{width:100%;min-height:82px;border:0;border-bottom:1px solid #2a2b2d;background:transparent;display:flex;align-items:center;text-align:left;padding:0 16px;gap:13px;cursor:pointer;transition:.18s}
+.folderRow:last-child{border-bottom:0}
+.folderRow:hover{background:#191a1c}
+.folderIcon{width:36px;height:36px;border:1px solid #353638;border-radius:10px;display:grid;place-items:center;color:#aaa}
+.folderInfo{display:flex;flex-direction:column;gap:5px;flex:1;min-width:0}
+.folderInfo b{font-size:14px}
+.folderInfo small{color:#6e7073;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rowCount{color:#666;font-size:12px;margin-right:10px}
+.rowArrow{color:#666}
+.backBtn{display:flex;align-items:center;gap:7px;border:0;background:transparent;color:#999;cursor:pointer;margin:-4px 0 18px;padding:5px 0}
+.itemGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.fileCard{border:1px solid #303134;background:rgba(18,19,20,.75);border-radius:15px;padding:17px;transition:.18s}
+.fileCard:hover{transform:translateY(-2px);border-color:#45474a;box-shadow:0 14px 35px rgba(0,0,0,.25)}
+.fileTop{display:flex;justify-content:space-between;align-items:center}
+.fileIcon{width:36px;height:36px;border:1px solid #353638;border-radius:10px;display:grid;place-items:center;color:#aaa}
+.fileType{font-size:10px;color:#777;border:1px solid #343538;border-radius:7px;padding:4px 7px}
+.fileCard h3{margin:15px 0 7px;font-size:16px}
+.fileCard p{color:#85878a;font-size:12px;line-height:1.55;min-height:38px;margin:0}
+.tags{display:flex;gap:5px;margin:13px 0;flex-wrap:wrap}
+.tags span{font-size:9px;letter-spacing:.6px;color:#8d8f92;border:1px solid #303134;border-radius:5px;padding:3px 5px}
+.meta{display:flex;justify-content:space-between;color:#65676a;font-size:11px;border-top:1px solid #292a2c;padding-top:12px;margin-top:10px}
+.downloadBtn{height:36px;margin-top:12px;border:1px solid #383a3c;border-radius:9px;background:#e9e9e9;color:#111;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:7px;font-size:12px;font-weight:700}
+.externalSection{margin-top:38px}
+.sectionHeader{display:flex;align-items:center;gap:12px;color:#666;font-size:11px;font-weight:800;letter-spacing:1.2px}
+.sectionHeader:after{content:"";height:1px;background:#292a2c;flex:1}
+.externalGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:13px}
+.externalCard{min-height:62px;border:1px solid #303134;border-radius:13px;background:#151617;color:#bbb;text-decoration:none;display:flex;align-items:center;gap:10px;padding:12px;font-size:12px;transition:.18s}
+.externalCard:hover{background:#1a1b1d;border-color:#444}
+.externalCard>span:nth-child(2){flex:1}
+.externalIcon{width:29px;height:29px;border-radius:7px;background:#202224;display:grid;place-items:center;color:#aaa}
+.searchResults{margin-top:35px}
+.sectionTitle{color:#777;font-size:11px;font-weight:800;letter-spacing:1.2px;margin-bottom:12px}
+.empty{border:1px dashed #353638;border-radius:15px;padding:50px;display:flex;flex-direction:column;align-items:center;gap:8px;color:#777}
+.empty b{color:#aaa;font-size:14px}
+.empty span{font-size:12px}
+footer{text-align:center;color:#555;font-size:11px;padding:22px;border-top:1px solid #242527}
+footer span{margin:0 6px}
+.light{background:#f5f5f5;color:#18191a}
+.light .topbar{background:rgba(255,255,255,.9);border-color:#ddd}
+.light .search,.light .iconBtn,.light .folderList,.light .fileCard,.light .externalCard{background:#fff;border-color:#ddd}
+.light .search input{color:#222}
+.light .folderRow:hover,.light .externalCard:hover{background:#f6f6f6}
+.light .subtitle,.light .folderInfo small{color:#777}
+.light .downloadBtn{background:#171819;color:#fff}
+@media(max-width:800px){
+ .topbar{padding:0 16px}.brand span{display:none}.search{width:210px}
+ .content{padding:38px 16px 55px}.itemGrid{grid-template-columns:1fr 1fr}.externalGrid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+ .hero{align-items:flex-start;gap:15px}.countPill{display:none}
+ .search{width:170px}.itemGrid,.externalGrid{grid-template-columns:1fr}
+ .folderInfo small{display:none}
+ .rowCount{display:none}
+ h1{font-size:29px}
+}
