@@ -1,518 +1,147 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { createRoot } from 'react-dom/client';
-import { createClient } from '@supabase/supabase-js';
+import React, {useMemo, useState} from "react";
+import {createRoot} from "react-dom/client";
 import {
-  Upload,
-  Trash2,
-  RefreshCw,
-  LogOut,
-  Copy,
-  ExternalLink,
-  Search,
-  ShieldCheck,
-  FileArchive,
-  HardDrive,
-  CheckCircle2,
-  AlertCircle,
-  KeyRound,
-  LockKeyhole,
-  Eye,
-  EyeOff,
-} from 'lucide-react';
-import './styles.css';
+  ArrowLeft, ArrowRight, Download, ExternalLink, Folder, Search,
+  Settings2, SunMoon, FileArchive, ShieldCheck, Smartphone, Wrench,
+  HardDriveDownload, Package, TerminalSquare, Sparkles, CheckCircle2,
+  Copy, Check, X
+} from "lucide-react";
+import "./styles.css";
 
-// ============================================================
-// NOGIE ADMIN PANEL - FINAL STABLE CONFIG
-// Uses the user's existing Vercel variable names WITHOUT '_'.
-// Supported names:
-//   VITESUPABASEURL
-//   VITESUPABASEANONKEY
-// The normal VITE_* names are also accepted as a fallback.
-// ============================================================
+const folders = [
+  {id:"tools", name:"Tools", icon:Wrench, description:"MediaTek, Platform Tools + scrcpy utilities."},
+  {id:"drivers", name:"Drivers", icon:ShieldCheck, description:"Unisoc, Android USB and Universal ADB drivers."},
+  {id:"rooting", name:"Rooting Files", icon:Smartphone, description:"APatch, KernelSU Next and Root Checker files."},
+  {id:"backup", name:"Backup", icon:HardDriveDownload, description:"Backup packages — ready for future additions."},
+  {id:"miunlock", name:"MiUnlock-Client", icon:Package, description:"MiUnlock package — ready for future additions."}
+];
 
-const SUPABASE_URL =
-  import.meta.env.VITESUPABASEURL ||
-  import.meta.env.VITE_SUPABASE_URL ||
-  'https://qsuggbbmqsxpucxsiwdx.supabase.co';
+const items = [
+  {id:1, folder:"tools", name:"plat-tools-scrcpy", version:"V10", size:"14.09 MB", type:"ZIP", tags:["ADB","FASTBOOT","SCRCPY"], description:"Complete Platform Tools + scrcpy folder from ROOT-TOOL-NOGIE.V10.", download:"https://qsuggbbmqsxpucxsiwdx.supabase.co/storage/v1/object/public/downloads/plat-tools-scrcpy.zip"},
+  {id:2, folder:"tools", name:"MediaTek", version:"V10", size:"EXE", type:"EXE", tags:["MTK","TOOL"], description:"MediaTek utility package from ROOT-TOOL-NOGIE.V10.", download:"https://qsuggbbmqsxpucxsiwdx.supabase.co/storage/v1/object/public/downloads/Mediatek.exe"},
+  {id:3, folder:"tools", name:"ROOT-TOOL-NOGIE.V10 Full Package", version:"V10", size:"83.2 MB", type:"ZIP", tags:["FULL","TOOLS"], description:"Complete original NOGIE V10 package bundled as one ZIP.", download:"https://github.com/nogiezxc/nogie-download-center/releases/download/v10.0.0/ROOT-TOOL-NOGIE.V10-Full-Package.zip"},
+  {id:4, folder:"drivers", name:"UnisocDriver", version:"V10", size:"8.6 MB", type:"ZIP", tags:["UNISOC","SPD","DRIVER"], description:"Complete Unisoc / SPD driver folder including installers and driver files.", download:"https://qsuggbbmqsxpucxsiwdx.supabase.co/storage/v1/object/public/downloads/UnisocDriver.zip"},
+  {id:5, folder:"drivers", name:"Android USB Driver", version:"V10", size:"8.3 MB", type:"ZIP", tags:["ADB","USB","DRIVER"], description:"Android USB driver folder with 32-bit and 64-bit support files.", download:"https://qsuggbbmqsxpucxsiwdx.supabase.co/storage/v1/object/public/downloads/usb_driver.zip"},
+  {id:6, folder:"drivers", name:"Universal ADB Driver", version:"V10", size:"16 MB", type:"MSI", tags:["ADB","DRIVER"], description:"Universal ADB Driver installer package.", download:"https://qsuggbbmqsxpucxsiwdx.supabase.co/storage/v1/object/public/downloads/UniversalAdbDriverSetup.msi"},
+  {id:7, folder:"rooting", name:"Root Manager", version:"V10", size:"26.9 MB", type:"ZIP", tags:["APATCH","KERNELSU","ROOT"], description:"Root Manager folder containing APatch, KernelSU Next and Root Checker APK files.", download:"https://qsuggbbmqsxpucxsiwdx.supabase.co/storage/v1/object/public/downloads/Root%20Manager.zip"}
+];
 
-const SUPABASE_ANON_KEY =
-  import.meta.env.VITESUPABASEANONKEY ||
-  import.meta.env.VITE_SUPABASE_ANON_KEY ||
-  '';
+const external = [
+  {name:"Ultraviewer", url:"#", icon:TerminalSquare},
+  {name:"MTK / QCOM / ADB Driver", url:"#", icon:ShieldCheck},
+  {name:"Android Utility", url:"#", icon:Smartphone},
+  {name:"Unlocktool", url:"#", icon:Settings2}
+];
 
-const BUCKET = 'downloads';
+function App(){
+  const [folder, setFolder] = useState(null);
+  const [query, setQuery] = useState("");
+  const [light, setLight] = useState(false);
+  const [notice, setNotice] = useState("");
+  const [copied, setCopied] = useState(false);
 
-// Do not call createClient with an empty key: that caused the old blank screen.
-const supabase = SUPABASE_ANON_KEY
-  ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-  : null;
+  const folderInfo = folder ? folders.find(x=>x.id===folder) : null;
+  const visibleItems = useMemo(() => {
+    let list = folder ? items.filter(x=>x.folder===folder) : items;
+    const q = query.trim().toLowerCase();
+    if(q) list = list.filter(x => [x.name,x.version,x.type,x.description,...x.tags].join(" ").toLowerCase().includes(q));
+    return list;
+  }, [folder, query]);
 
-function ConfigError() {
-  return (
-    <div className="login">
-      <div className="loginCard">
-        <div className="brand">
-          <div className="logo">N</div>
-          <div>
-            <b>NOGIE</b>
-            <span>DOWNLOAD CENTER</span>
-          </div>
-        </div>
-        <div className="secure">
-          <AlertCircle size={18} /> Configuration required
-        </div>
-        <h1>Supabase key missing</h1>
-        <p>
-          The admin panel could not find the Supabase public/publishable key.
-        </p>
-        <div className="error" style={{ marginTop: 18 }}>
-          <AlertCircle size={16} />
-          Vercel variable required: <b>VITESUPABASEANONKEY</b>
-        </div>
-        <p style={{ marginTop: 16, fontSize: 12 }}>
-          Add the variable in Vercel, then redeploy this project.
-        </p>
-      </div>
-    </div>
-  );
-}
+  const openFolder = id => { setFolder(id); setQuery(""); window.scrollTo({top:0, behavior:"smooth"}); };
+  const goHome = () => { setFolder(null); setQuery(""); window.scrollTo({top:0, behavior:"smooth"}); };
+  const showNotice = text => { setNotice(text); setTimeout(()=>setNotice(""), 2600); };
 
-function Login({ onLogin }) {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [resetSent, setResetSent] = useState(false);
-
-  const submit = async (e) => {
-    e.preventDefault();
-    if (!supabase) return;
-
-    setLoading(true);
-    setError('');
-    setResetSent(false);
-
-    try {
-      const { data, error: authError } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password,
-      });
-
-      if (authError) {
-        setError(authError.message);
-      } else if (data?.session) {
-        onLogin(data.session);
-      } else {
-        setError('Login succeeded but no session was returned. Please try again.');
-      }
-    } catch (err) {
-      setError(err?.message || 'Unable to sign in.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const resetPassword = async () => {
-    if (!supabase) return;
-    const target = email.trim();
-
-    if (!target) {
-      setError('Enter your admin email first.');
-      return;
-    }
-
-    setLoading(true);
-    setError('');
-    setResetSent(false);
-
-    try {
-      const redirectTo = `${window.location.origin}/`;
-      const { error: resetError } = await supabase.auth.resetPasswordForEmail(target, {
-        redirectTo,
-      });
-
-      if (resetError) {
-        setError(resetError.message);
-      } else {
-        setResetSent(true);
-      }
-    } catch (err) {
-      setError(err?.message || 'Unable to send password recovery email.');
-    } finally {
-      setLoading(false);
-    }
+  const copySite = async () => {
+    try { await navigator.clipboard.writeText(window.location.href); setCopied(true); setTimeout(()=>setCopied(false),1800); }
+    catch { showNotice("Copy is not available in this browser."); }
   };
 
   return (
-    <div className="login">
-      <div className="loginCard">
-        <div className="brand">
-          <div className="logo">N</div>
-          <div>
-            <b>NOGIE</b>
-            <span>DOWNLOAD CENTER</span>
+    <div className={light ? "app light" : "app"}>
+      <header className="topbar">
+        <div className="topbarInner">
+          <button className="brand" onClick={goHome} aria-label="NOGIE Download Center home">
+            <span className="brandIcon"><Download size={18}/></span>
+            <span className="brandText"><b>NOGIE</b><small>DOWNLOAD CENTER</small></span>
+          </button>
+          <div className="topActions">
+            <label className="search">
+              <Search size={16}/>
+              <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search tools, drivers, files..." />
+              {query && <button className="clearSearch" onClick={()=>setQuery("")} aria-label="Clear search"><X size={14}/></button>}
+            </label>
+            <button className="iconBtn" onClick={()=>setLight(v=>!v)} title="Toggle theme"><SunMoon size={18}/></button>
           </div>
-        </div>
-
-        <div className="secure">
-          <ShieldCheck size={18} /> Admin access
-        </div>
-
-        <h1>Welcome back</h1>
-        <p>Manage files in the public download bucket.</p>
-
-        <form onSubmit={submit}>
-          <label>
-            Email
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoComplete="email"
-              required
-            />
-          </label>
-
-          <label>
-            Password
-            <div style={{ position: 'relative' }}>
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                autoComplete="current-password"
-                required
-                style={{ paddingRight: 44 }}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((v) => !v)}
-                title={showPassword ? 'Hide password' : 'Show password'}
-                aria-label={showPassword ? 'Hide password' : 'Show password'}
-                style={{
-                  position: 'absolute',
-                  right: 10,
-                  top: '50%',
-                  transform: 'translateY(-50%)',
-                  border: 0,
-                  background: 'transparent',
-                  color: '#7d858a',
-                  cursor: 'pointer',
-                  padding: 5,
-                }}
-              >
-                {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
-              </button>
-            </div>
-          </label>
-
-          {error && (
-            <div className="error">
-              <AlertCircle size={16} />
-              <span>{error}</span>
-            </div>
-          )}
-
-          {resetSent && (
-            <div className="success" style={{ marginTop: 10 }}>
-              <CheckCircle2 size={16} /> Recovery email sent. Check your inbox.
-            </div>
-          )}
-
-          <button className="primary" disabled={loading} type="submit">
-            <LockKeyhole size={16} />
-            {loading ? 'Signing in…' : 'Sign in'}
-          </button>
-
-          <button
-            className="ghost"
-            type="button"
-            onClick={resetPassword}
-            disabled={loading}
-            style={{ width: '100%', justifyContent: 'center', marginTop: 10 }}
-          >
-            <KeyRound size={16} /> Forgot password
-          </button>
-        </form>
-      </div>
-    </div>
-  );
-}
-
-function App() {
-  const [session, setSession] = useState(null);
-  const [files, setFiles] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [uploading, setUploading] = useState(false);
-  const [search, setSearch] = useState('');
-  const [notice, setNotice] = useState(null);
-
-  useEffect(() => {
-    if (!supabase) return undefined;
-
-    let active = true;
-
-    supabase.auth.getSession().then(({ data, error }) => {
-      if (!active) return;
-      if (error) {
-        console.error('getSession:', error);
-        setSession(null);
-        return;
-      }
-      setSession(data?.session || null);
-    });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      setSession(nextSession || null);
-    });
-
-    return () => {
-      active = false;
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (session) loadFiles();
-  }, [session]);
-
-  const notify = (type, text) => {
-    setNotice({ type, text });
-    window.clearTimeout(window.__nogieNoticeTimer);
-    window.__nogieNoticeTimer = window.setTimeout(() => setNotice(null), 3500);
-  };
-
-  const loadFiles = async () => {
-    if (!supabase) return;
-
-    setLoading(true);
-    try {
-      const { data, error } = await supabase.storage.from(BUCKET).list('', {
-        limit: 1000,
-        sortBy: { column: 'name', order: 'asc' },
-      });
-
-      if (error) {
-        notify('error', error.message);
-        return;
-      }
-
-      setFiles(Array.isArray(data) ? data : []);
-    } catch (err) {
-      notify('error', err?.message || 'Unable to load files.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const upload = async (e) => {
-    if (!supabase) return;
-
-    const list = Array.from(e.target.files || []);
-    if (!list.length) return;
-
-    setUploading(true);
-
-    try {
-      for (const file of list) {
-        const { error } = await supabase.storage.from(BUCKET).upload(file.name, file, {
-          upsert: true,
-          cacheControl: '3600',
-          contentType: file.type || undefined,
-        });
-
-        if (error) {
-          notify('error', `${file.name}: ${error.message}`);
-        } else {
-          notify('ok', `${file.name} uploaded/replaced`);
-        }
-      }
-
-      await loadFiles();
-    } catch (err) {
-      notify('error', err?.message || 'Upload failed.');
-    } finally {
-      setUploading(false);
-      e.target.value = '';
-    }
-  };
-
-  const remove = async (name) => {
-    if (!supabase) return;
-    if (!window.confirm(`Delete ${name}?`)) return;
-
-    try {
-      const { error } = await supabase.storage.from(BUCKET).remove([name]);
-      if (error) {
-        notify('error', error.message);
-      } else {
-        notify('ok', 'File deleted');
-        await loadFiles();
-      }
-    } catch (err) {
-      notify('error', err?.message || 'Delete failed.');
-    }
-  };
-
-  const publicUrl = (name) =>
-    supabase.storage.from(BUCKET).getPublicUrl(name).data.publicUrl;
-
-  const copy = async (url) => {
-    try {
-      await navigator.clipboard.writeText(url);
-      notify('ok', 'Public URL copied');
-    } catch {
-      notify('error', 'Clipboard access was blocked by the browser.');
-    }
-  };
-
-  const logout = async () => {
-    if (!supabase) return;
-    const { error } = await supabase.auth.signOut();
-    if (error) notify('error', error.message);
-  };
-
-  const filtered = useMemo(() => {
-    const q = search.trim().toLowerCase();
-    if (!q) return files;
-    return files.filter((f) => f.name.toLowerCase().includes(q));
-  }, [files, search]);
-
-  const totalBytes = useMemo(
-    () => files.reduce((sum, f) => sum + Number(f.metadata?.size || 0), 0),
-    [files]
-  );
-
-  if (!supabase) return <ConfigError />;
-  if (!session) return <Login onLogin={setSession} />;
-
-  return (
-    <div className="app">
-      <header>
-        <div className="brand">
-          <div className="logo">N</div>
-          <div>
-            <b>NOGIE</b>
-            <span>ADMIN PANEL</span>
-          </div>
-        </div>
-
-        <div className="headActions">
-          <label className="upload">
-            <Upload size={17} />
-            {uploading ? 'Uploading…' : 'Upload files'}
-            <input type="file" multiple onChange={upload} disabled={uploading} />
-          </label>
-
-          <button className="ghost" onClick={loadFiles} disabled={loading || uploading}>
-            <RefreshCw size={17} className={loading ? 'spin' : ''} />
-            Refresh
-          </button>
-
-          <button className="ghost" onClick={logout}>
-            <LogOut size={17} />
-            Logout
-          </button>
         </div>
       </header>
 
-      <main>
+      <main className="content">
         <section className="hero">
-          <div>
-            <div className="eyebrow">
-              <ShieldCheck size={15} /> SECURE FILE MANAGEMENT
-            </div>
-            <h1>Download Center Admin</h1>
-            <p>Upload, replace, copy public links, and remove files from Supabase Storage.</p>
+          <div className="heroCopy">
+            <div className="eyebrow"><Sparkles size={13}/> ANDROID TOOL REPOSITORY</div>
+            <h1>{folderInfo ? folderInfo.name : "NOGIE Download Center"}</h1>
+            <p className="subtitle">{folderInfo ? folderInfo.description : "A clean, fast download hub for Android rooting, repair, drivers and utilities."}</p>
+            <div className="heroBadges"><span><CheckCircle2 size={13}/> Verified packages</span><span>V10 Collection</span></div>
           </div>
-
           <div className="stats">
-            <div>
-              <HardDrive />
-              <strong>{files.length}</strong>
-              <span>Files</span>
-            </div>
-            <div>
-              <FileArchive />
-              <strong>{(totalBytes / 1024 / 1024).toFixed(1)} MB</strong>
-              <span>Storage listed</span>
-            </div>
+            <div><b>{items.length}</b><span>files</span></div>
+            <div><b>{folders.filter(f=>items.some(x=>x.folder===f.id)).length}</b><span>categories</span></div>
           </div>
         </section>
 
-        <div className="toolbar">
-          <div className="search">
-            <Search size={18} />
-            <input
-              placeholder="Search files…"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-          <span className="bucket">
-            Bucket: <b>{BUCKET}</b>
-          </span>
-        </div>
+        {folder && <button className="backBtn" onClick={goHome}><ArrowLeft size={16}/> Back to folders</button>}
 
-        <section className="table">
-          {loading ? (
-            <div className="empty">Loading files…</div>
-          ) : filtered.length === 0 ? (
-            <div className="empty">No files found.</div>
-          ) : (
-            filtered.map((f) => {
-              const url = publicUrl(f.name);
-              const size = f.metadata?.size
-                ? `${(Number(f.metadata.size) / 1024 / 1024).toFixed(2)} MB`
-                : '—';
-
-              return (
-                <div className="row" key={f.id || f.name}>
-                  <div className="fileIcon">
-                    <FileArchive size={21} />
-                  </div>
-
-                  <div className="fileName">
-                    <b>{f.name}</b>
-                    <span>
-                      {size}
-                      {f.created_at ? ` · ${new Date(f.created_at).toLocaleString()}` : ''}
-                    </span>
-                  </div>
-
-                  <div className="actions">
-                    <button title="Copy public URL" onClick={() => copy(url)}>
-                      <Copy size={17} />
-                    </button>
-                    <a title="Open" href={url} target="_blank" rel="noreferrer">
-                      <ExternalLink size={17} />
-                    </a>
-                    <button
-                      className="danger"
-                      title="Delete"
-                      onClick={() => remove(f.name)}
-                    >
-                      <Trash2 size={17} />
-                    </button>
-                  </div>
-                </div>
-              );
-            })
-          )}
-        </section>
+        {!folder ? (
+          <>
+            <div className="sectionLabel">BROWSE COLLECTION</div>
+            <div className="folderGrid">
+              {folders.map(f=>{
+                const Icon=f.icon;
+                const count=items.filter(x=>x.folder===f.id).length;
+                return <button className={`folderCard ${count===0 ? "disabledCard" : ""}`} key={f.id} onClick={()=>count && openFolder(f.id)} disabled={!count}>
+                  <span className="folderIcon"><Icon size={20}/></span>
+                  <span className="folderInfo"><b>{f.name}</b><small>{f.description}</small></span>
+                  <span className="folderBottom"><span>{count ? `${count} ${count===1?"file":"files"}` : "Coming soon"}</span><ArrowRight size={17}/></span>
+                </button>
+              })}
+            </div>
+            {query && <SearchSection items={visibleItems}/>} 
+            {!query && <ExternalSources items={external}/>} 
+          </>
+        ) : (
+          <>
+            <div className="sectionBar"><div className="sectionLabel">{folderInfo?.name.toUpperCase()}</div><span>{visibleItems.length} files</span></div>
+            {visibleItems.length ? <div className="itemGrid">{visibleItems.map(item=><FileCard key={item.id} item={item} onDownload={showNotice}/>)}</div> : <Empty/>}
+          </>
+        )}
       </main>
 
-      {notice && (
-        <div className={`notice ${notice.type}`}>
-          {notice.type === 'error' ? <AlertCircle size={17} /> : <CheckCircle2 size={17} />}
-          {notice.text}
-        </div>
-      )}
+      <footer><div><b>NOGIE Download Center</b><span>•</span> V2 UI</div><button onClick={copySite}>{copied ? <><Check size={13}/> Copied</> : <><Copy size={13}/> Copy site link</>}</button></footer>
+      {notice && <div className="toast"><CheckCircle2 size={16}/> {notice}</div>}
     </div>
   );
 }
 
-createRoot(document.getElementById('root')).render(<App />);
+function SearchSection({items}){
+  return <section className="searchResults"><div className="sectionBar"><div className="sectionLabel">SEARCH RESULTS</div><span>{items.length} matches</span></div>{items.length ? <div className="itemGrid">{items.map(item=><FileCard key={item.id} item={item}/>)}</div> : <Empty/>}</section>
+}
+
+function ExternalSources({items}){
+  return <section className="externalSection"><div className="sectionBar"><div className="sectionLabel">EXTERNAL SOURCES</div><span>Quick links</span></div><div className="externalGrid">{items.map(x=>{const Icon=x.icon;return <a className="externalCard" href={x.url} key={x.name} onClick={e=>x.url==="#"&&e.preventDefault()}><span className="externalIcon"><Icon size={17}/></span><span><b>{x.name}</b><small>External resource</small></span><ExternalLink size={15}/></a>})}</div></section>
+}
+
+function FileCard({item, onDownload}){
+  return <article className="fileCard">
+    <div className="fileTop"><span className="fileIcon"><FileArchive size={20}/></span><span className="fileType">{item.type}</span></div>
+    <h3>{item.name}</h3>
+    <p>{item.description}</p>
+    <div className="tags">{item.tags.map(t=><span key={t}>{t}</span>)}</div>
+    <div className="meta"><span>v{item.version}</span><span>{item.size}</span></div>
+    <a className="downloadBtn" href={item.download} onClick={()=>onDownload?.(`Starting ${item.name} download...`)}><Download size={16}/> Download</a>
+  </article>
+}
+
+function Empty(){return <div className="empty"><Search size={25}/><b>No files found</b><span>Try another search term.</span></div>}
+
+createRoot(document.getElementById("root")).render(<App/>);
